@@ -1,0 +1,33 @@
+.venv/
+.venv-ocr/
+__pycache__/
+*.pyc
+.pytest_cache/
+data/ocr-temp/
+data/ocr-cache/
+*.sqlite3
+.env
+.env.*
+!.env.example
+*.egg-info/
+
+# Downloaded libraries, model repositories, and local runtime assets
+/vendor/
+/models/*/
+*.whl
+*.safetensors
+*.gguf
+/node_modules/
+
+# Local documents, databases, logs, and generated presentations
+/data/
+/outputs/
+/.presentation-build/
+*.sqlite3-wal
+*.sqlite3-shm
+*.log
+
+# Machine-specific credentials
+/.streamlit/secrets.toml
+*.pem
+*.key

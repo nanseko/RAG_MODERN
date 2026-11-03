@@ -1,0 +1,18 @@
+paths:
+  db: data/rag.sqlite3
+  docs: data/docs
+  md: data/md
+  originals: data/originals
+ingestion:
+  autoscan: false
+  interval_min: 30
+retrieval:
+  candidates: 50
+  rerank_top_n: 8
+  target_min: 3
+  target_max: 5
+  max_cycles: 3
+  context_tokens: 6000
+chunking:
+  target_tokens: 650
+  max_tokens: 1000

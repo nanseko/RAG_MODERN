@@ -1,0 +1,66 @@
+# RTX 5080 운영 서버용. 모델·DB는 볼륨에 유지, 코드는 마운트.
+services:
+  opensearch:
+    image: opensearchproject/opensearch:3.9.0
+    environment:
+      - discovery.type=single-node
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=ChangeMe123!
+      - DISABLE_SECURITY_PLUGIN=true
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+
+  api:
+    image: python:3.12-slim
+    working_dir: /srv/rag
+    volumes:
+      - .:/srv/rag
+      - rag-data:/srv/rag/data
+    ports:
+      - "8000:8000"
+    environment:
+      - RAG_SEARCH_BACKEND=opensearch
+      - OPENSEARCH_URL=http://opensearch:9200
+      - RAG_TASK_BACKEND=celery
+      - REDIS_URL=redis://redis:6379/0
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    depends_on:
+      - opensearch
+      - redis
+
+  worker:
+    image: python:3.12-slim
+    working_dir: /srv/rag
+    volumes:
+      - .:/srv/rag
+      - rag-data:/srv/rag/data
+    environment:
+      - RAG_TASK_BACKEND=celery
+      - REDIS_URL=redis://redis:6379/0
+      - OPENSEARCH_URL=http://opensearch:9200
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: celery -A workers.celery_app.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+      - opensearch
+
+  redis:
+    image: redis:8
+    volumes:
+      - redis-data:/data
+
+volumes:
+  opensearch-data:
+  rag-data:
+  redis-data:

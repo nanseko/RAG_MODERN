@@ -1,0 +1,17 @@
+# Native Windows Python 3.12 x64 OCR environment ONLY. Never install into .venv.
+# Official PyTorch 2.10 CUDA 12.8 Windows wheels include Blackwell sm_120.
+torch==2.10.0+cu128
+torchvision==0.25.0+cu128
+transformers==4.57.1
+Pillow==12.1.1
+matplotlib==3.10.8
+einops==0.8.2
+addict==2.4.0
+easydict==1.13
+pymupdf==1.27.2.2
+psutil==7.2.2
+requests==2.34.2
+httpx==0.28.1
+fastapi==0.142.2
+uvicorn==0.53.0
+python-dotenv==1.2.4
